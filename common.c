@@ -2,30 +2,46 @@
 #include<stdlib.h>
 #include<string.h>
 
-#pragma warning(disable:4996)
-
 struct koza {
+	char id[20];
+	char pass[20];
 	char sei[20];
 	char mei[20];
 	int sex; //sex=0:man, sex=1:woman
 	unsigned int birthday;
-	char pass[20];
-	char pass_check[20];
-	char id[20];
 	int freeze;
 	unsigned int money;
+
+	char pass_check[20];
 }account;
 
+//FIXME:固定長
+//FIXME:未初期化
+struct koza all_koza_data[256];
+unsigned int koza_number;
+
 void input(),output(),/*send(),*/log(),account_info();
+int search_koza_index();
 
 int main(){
-	int i;
+	FILE *fp = fopen("info.txt","r");
+    koza_number=0;
+	while(fscanf(fp, "%s %s %s %s %d %d %d %d", all_koza_data[koza_number].id,all_koza_data[koza_number].pass,all_koza_data[koza_number].sei,all_koza_data[koza_number].mei,&all_koza_data[koza_number].sex,&all_koza_data[koza_number].birthday,&all_koza_data[koza_number].freeze,&all_koza_data[koza_number].money)!=EOF){
+        koza_number++;
+    }
+
 	for(;;){
 		printf("1.入金 2.出金 3.送金 4.ログの表示 5.アカウント情報 6.終了\n");
-		scanf("%d",&i);
-		switch(i){
+
+        //TODO:ログインで入力
+        char koza_id[]="0000000";
+        int koza_index=search_koza_index(koza_id);
+
+        int command;
+		scanf("%d",&command);
+		switch(command){
 			case 1:
-						input();
+						input(koza_index);
 						break;
 			case 2:
 						output();
@@ -46,25 +62,26 @@ int main(){
 						printf("Error:1〜6の数字を入力してください\n");
 		}
 	}
-	return 0;
+}
+
+int search_koza_index(char* id){
+    for(int i=0;i<koza_number;++i){
+        if(strcmp(all_koza_data[i].id,id)==0){
+            return i;
+        }
+    }
+    return -1;
 }
 
 
-void input(){
-	FILE *fp;
-	int i;
-	char r[20];
-	fp = fopen("info.txt","r+");
-	printf("入金する額を入力してください\n");
-	scanf("%d",&i);
-	
-	fscanf(fp, "%s", r);
-	account.money = atoi(r);
-	account.money = account.money + i;
-	fclose(fp);
-	
-	fp = fopen("iolog.txt","a");
-	fprintf(fp, "+%d	%d	%s \n",i,account.money,account.id);
+void input(int koza_index){
+	puts("入金する額を入力してください");
+	int amount;
+	scanf("%d",&amount);
+	all_koza_data[koza_index].money +=amount;
+
+	FILE* fp = fopen("iolog.txt","a");
+	fprintf(fp, "+%d	%d	%s \n",amount,account.money,account.id);
 	fclose(fp);
 }
 
@@ -104,7 +121,7 @@ void log(){
 	int i;
 	fp = fopen("iolog.txt","r");
 	fscanf(fp,"%d",&i);
-	printf("%s",i);
+	printf("%d",i);
 	fclose(fp);
 }
 

@@ -1,166 +1,171 @@
 #include<stdio.h>
 #include<string.h>
 #include<stdlib.h>
+#include<unistd.h>
+#include<termios.h>
 
-struct koza { 
-	char sei[20];
-	char mei[20]; 
-	int sex; //sex=0:man, sex=1:woman
-	unsigned int birthday;
-	char pass[20];
-	char pass_check[20];
-	char id[20];
-	int freeze;
-	unsigned int money;
-}account;
+enum SEX{
+    SEX_MAN,
+    SEX_WOMAN
+};
 
-int Login_check;
+struct koza {
+    char id[20];
+    char pass[20];
+    char sei[20];
+    char mei[20]; 
+    enum SEX sex; 
+    unsigned int birthday;
+    int freeze;
+    unsigned int money;
+
+    char pass_check[20];
+};
+
+//FIXME:固定長
+//FIXME:未初期化
+struct koza all_koza_data[256];
+unsigned int number_of_koza;
+int current_koza_index;
+
+enum LOGIN_STATE{
+    NOT_LOGGEDIN,
+    LOGGEDIN_AS_NORMAL_USER,
+    LOGGEDIN_AS_MASTER
+};
+enum LOGIN_STATE Login_check;
 
 void master_login(char id[20],char pass[20])
 {
-	char id2[20];
-	char pass2[20];
-	char m_id[]=("------");
-	char m_pass[]=("kouda-ryukou");
-	char m_id2[]=("master");
-	char m_pass2[]=("1234567890");
+    char id2[20];
+    char pass2[20];
+    char m_id[]=("------");
+    char m_pass[]=("kouda-ryukou");
+    char m_id2[]=("master");
+    char m_pass2[]=("1234567890");
 
-	if(strcmp(m_id,id)==0){
-		if(strcmp(m_pass,pass)==0)
-		{
-			printf("---------------------------------------\n");
-			printf("ログイン失敗\n");
-			printf("---------------------------------------\n");
-			printf("-口座番号（７桁）を入力してください-\n");
-			scanf("%s",id2);
-			printf("---------------------------------------\n");
-			printf("-パスワードを入力してください-\n");
-			printf("※ パスワードは隠し状態です。\n");
-			system("stty -echo"); //入力内容隠し状態
-			scanf("%s",pass2);
-			system("stty echo"); //隠し状態解除
-			printf("\n");
-			if(strcmp(m_id2,id2)==0)
-			if(strcmp(m_pass2,pass2)==0)
-			{
-				printf("---------------------------------------\n");
-				printf("good!\n");
-				Login_check=2;
-			}else{
-				printf("---------------------------------------\n");
-				printf("ログイン失敗\n");
+    if(strcmp(m_id,id)==0){
+        if(strcmp(m_pass,pass)==0)
+        {
+            puts("---------------------------------------");
+            puts("ログイン失敗");
+            puts("---------------------------------------");
+            puts("-口座番号（７桁）を入力してください-");
+            scanf("%s",id2);
+            puts("---------------------------------------");
+            puts("-パスワードを入力してください-");
+            puts("※ パスワードは隠し状態です。");
+            system("stty -echo"); //入力内容隠し状態
+            scanf("%s",pass2);
+            system("stty echo"); //隠し状態解除
+            puts("");
+            if(strcmp(m_id2,id2)==0)
+                if(strcmp(m_pass2,pass2)==0)
+                {
+                    puts("---------------------------------------");
+                    puts("good!");
+                    Login_check=LOGGEDIN_AS_MASTER;
+                }else{
+                    puts("---------------------------------------");
+                    puts("ログイン失敗");
 
-			}
-		}
-	}
+                }
+        }
+    }
 
 }
-void Search(char id[20],char pass[20])
+
+void Info(int koza_index)
 {
-	char n_id[20];
-	char n_pass[20];
-	char n_through[20];
-	int i,j;
-	FILE *fp;
-	fp=fopen("info.txt","r");
-	for(i=0;i<=1000;i++){
-		fscanf(fp,"%s",n_id);
-		fscanf(fp,"%s",n_pass);
-		if(strcmp(n_id,id)!=0){
-			//printf("id error\n");
-		}else{
-			if(strcmp(n_pass,pass)!=0){
-				//printf("pass error\n");
-			}else{
-				printf("---------------------------------------\n");
-				printf("ログイン成功\n");
-				fscanf(fp,"%s",account.sei);
-				fscanf(fp,"%s",account.mei);
-				fscanf(fp,"%d",&account.sex);
-				fscanf(fp,"%d",&account.birthday);
-				fscanf(fp,"%d",&account.freeze);
-				fscanf(fp,"%d",&account.money);
-				Login_check=1;
-				//ログインしたアカウントのデータを読み込む
-				break;
-			}
-		}
-		for(j=1;j<=6;j++){
-			fscanf(fp,"%s",n_through);
-		}
-	}
-	if(Login_check==0){
-		printf("---------------------------------------\n");
-		printf("ログイン失敗\n");
-	}
+    puts("---------------------------------------");
+    printf("ID:%10s\n",all_koza_data[koza_index].id);
+    printf("パスワード:%10s\n",all_koza_data[koza_index].pass);
+    printf("姓:%10s\n",all_koza_data[koza_index].sei);
+    printf("名:%10s\n",all_koza_data[koza_index].mei);
+    printf("性別:%10d\n",all_koza_data[koza_index].sex);
+    printf("誕生日:%10d\n",all_koza_data[koza_index].birthday);
+    printf("残高:%10d\n",all_koza_data[koza_index].money);
 }
 
-void Info()
-{
-	printf("---------------------------------------\n");
-	printf("ID:%10s\n",account.id);
-	printf("パスワード:%10s\n",account.pass);
-	printf("姓:%10s\n",account.sei);
-	printf("名:%10s\n",account.mei);
-	printf("性別:%10d\n",account.sex);
-	printf("誕生日:%10d\n",account.birthday);
-	printf("残高:%10d\n",account.money);
+int serach_koza_index(char* id){
+    for(int i=0;i<number_of_koza;++i){
+        if(strcmp(all_koza_data[i].id,id)==0){
+            return i;
+        }
+    }
+    return -1;
 }
 
 void Login() //ログイン情報入力
 {
-	char id[20];
-	char pass[20];
-	int i;
-	printf("---------------------------------------\n");
-	printf("-口座番号（７桁）を入力してください-\n");
-	scanf("%s",id);
-	printf("---------------------------------------\n");
-	printf("-パスワードを入力してください-\n");
-	printf("※ パスワードは隠し状態です。\n");
-	system("stty -echo"); //入力内容隠し状態
-	scanf("%s",pass);
-	system("stty echo"); //隠し状態解除
-	printf("\n");
-	printf("---------------------------------------\n");
-	printf("ID:%s,PASS:%s\n",id,pass);  //確認用
-	master_login(id,pass);
-	Search(id,pass);
-	for(i=0;i<=20;i++){
-		account.id[i]=id[i];
-		account.pass[i]=pass[i];
-	}
-	if(Login_check==1){Info();}
+    puts("---------------------------------------");
+    printf("-口座番号（７桁）を入力してください-\n");
+    char* id;
+    scanf("%ms",&id);
+    puts("---------------------------------------");
+    puts("-パスワードを入力してください-");
+    puts("※ パスワードは隠し状態です。");
+    system("stty -echo"); //入力内容隠し状態
+    char* pass;
+    scanf("%ms",&pass);
+    system("stty echo"); //隠し状態解除
+    printf("\n");
+    printf("---------------------------------------\n");
+    printf("ID:%s,PASS:%s\n",id,pass);  //確認用
+    master_login(id,pass);
+    int koza_index=serach_koza_index(id);
+    if(koza_index==-1 || strcmp(all_koza_data[koza_index].pass,pass)!=0) {
+        puts("---------------------------------------");
+        puts("ログイン失敗");
+        return;
+    }
+    puts("---------------------------------------");
+    puts("ログイン成功");
+    Login_check=LOGGEDIN_AS_NORMAL_USER;
+    current_koza_index=koza_index;
+
+    free(id);
+    free(pass);
+
+    if(Login_check==LOGGEDIN_AS_NORMAL_USER){
+        Info(current_koza_index);
+    }
 }
 
 void Logo(){
-	printf("  ----------       -------     -             -------     \n");
-	printf("           -      -      -     -            -      -     \n");
-	printf("      -    -     -      -      -           -      -      \n");
-	printf("      -   -     -      -       ------     -      -       \n");
-	printf("      -               -        -                -        \n");
-	printf("      -              -         -               -         \n");
-	printf("     -              -          -              -          \n");
-	printf("     -            -           -             -            \n");
-	printf("                          ★                             \n");
-	printf("     -    - -                                            \n");
-	printf("  -------- - -               ---------        -          \n");
-	printf("      -         -----                -   ----------      \n");
-	printf("      -                   -          -   -        -      \n");
-	printf("  --------               -           -   -        -      \n");
-	printf("       -               --            -           -       \n");
-	printf("       -            ---              -          -        \n");
-	printf("       -        ----         ---------         -         \n");
+    puts("  ----------       -------     -             -------     ");
+    puts("           -      -      -     -            -      -     ");
+    puts("      -    -     -      -      -           -      -      ");
+    puts("      -   -     -      -       ------     -      -       ");
+    puts("      -               -        -                -        ");
+    puts("      -              -         -               -         ");
+    puts("     -              -          -              -          ");
+    puts("     -            -           -             -            ");
+    puts("                          ★                             ");
+    puts("     -    - -                                            ");
+    puts("  -------- - -               ---------        -          ");
+    puts("      -         -----                -   ----------      ");
+    puts("      -                   -          -   -        -      ");
+    puts("  --------               -           -   -        -      ");
+    puts("       -               --            -           -       ");
+    puts("       -            ---              -          -        ");
+    puts("       -        ----         ---------         -         ");
 
 }
 
 int main()
 {
-	Logo();
-	while(1){
-		//menu;
-		Login_check=0;
-		Login();
-	}
+	FILE *fp = fopen("info.txt","r");
+    number_of_koza=0;
+	while(fscanf(fp, "%s %s %s %s %d %d %d %d", all_koza_data[number_of_koza].id,all_koza_data[number_of_koza].pass,all_koza_data[number_of_koza].sei,all_koza_data[number_of_koza].mei,&all_koza_data[number_of_koza].sex,&all_koza_data[number_of_koza].birthday,&all_koza_data[number_of_koza].freeze,&all_koza_data[number_of_koza].money)!=EOF){
+        number_of_koza++;
+    }
+
+    Logo();
+    while(1){
+        //menu;
+        Login_check=NOT_LOGGEDIN;
+        Login();
+    }
 }
 
