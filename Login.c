@@ -33,7 +33,7 @@ enum LOGIN_STATE{
     LOGGEDIN_AS_NORMAL_USER,
     LOGGEDIN_AS_MASTER
 };
-enum LOGIN_STATE Login_check;
+enum LOGIN_STATE Login_check=NOT_LOGGEDIN;
 
 void master_login(char id[20],char pass[20])
 {
