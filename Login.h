@@ -7,6 +7,3 @@ extern enum LOGIN_STATE Login_check;
 
 void Logo();
 void Login();
-void iolog(char* target_koza_id);
-void master_login(char id[20],char pass[20]);
-
