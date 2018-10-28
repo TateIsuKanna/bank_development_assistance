@@ -114,18 +114,20 @@ void Login() //ログイン情報入力
     printf("ID:%s,PASS:%s\n",id,pass);  //確認用
     master_login(id,pass);
     int koza_index=serach_koza_index(id);
+    free(id);
     if(koza_index==-1 || strcmp(all_koza_data[koza_index].pass,pass)!=0) {
         puts("---------------------------------------");
         puts("ログイン失敗");
+        free(pass);
         return;
     }
+    free(pass);
+
     puts("---------------------------------------");
     puts("ログイン成功");
     Login_check=LOGGEDIN_AS_NORMAL_USER;
     current_koza_index=koza_index;
 
-    free(id);
-    free(pass);
 
     if(Login_check==LOGGEDIN_AS_NORMAL_USER){
         Info(current_koza_index);
