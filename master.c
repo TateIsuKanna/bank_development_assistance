@@ -121,11 +121,12 @@ void master_detail() {
     }
 
     int koza_index=search_koza_index(koza_id);
+    free(koza_id);
     if (koza_index==-1){
         puts("その口座は存在しません。");
+        return;
     }
 
-    free(koza_id);
 
     //情報出力
     printf("口座番号：%s\n", all_koza_data[koza_index].id);
@@ -133,16 +134,16 @@ void master_detail() {
     printf("名：%s\n", all_koza_data[koza_index].mei);
     printf("性別：");
     if (all_koza_data[koza_index].sex == SEX_MAN){
-        printf("男性\n");
+        puts("男性");
     } else {
-        printf("女性\n");
+        puts("女性");
     }
     printf("生年月日：%d\n", all_koza_data[koza_index].birthday);
     printf("凍結状態：");
     if (all_koza_data[koza_index].freeze ){
-        printf("凍結されています\n");
+        puts("凍結されています");
     }else {
-        printf("凍結されていません\n");
+        puts("凍結されていません");
     }
     printf("預金額：%d円\n", all_koza_data[koza_index].money);
 }
@@ -154,12 +155,12 @@ void master_freeze() {
     scanf("%ms", &koza_id);
 
     int koza_index=search_koza_index(koza_id);
+    free(koza_id);
     if (koza_index==-1){
         puts("その口座は存在しません。");
         return;
     }
 
-    free(koza_id);
 
     if (all_koza_data[koza_index].freeze){
         puts("この口座は現在凍結されています。");
