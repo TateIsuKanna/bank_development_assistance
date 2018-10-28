@@ -42,9 +42,9 @@ int search_koza_index(char* id){
 }
 
 int main() {
-	FILE *fp = fopen("info.txt","r");
+    FILE *fp = fopen("info.txt","r");
     number_of_koza=0;
-	while(fscanf(fp, "%s %s %s %s %u %d %d %d", all_koza_data[number_of_koza].id,all_koza_data[number_of_koza].pass,all_koza_data[number_of_koza].sei,all_koza_data[number_of_koza].mei,&all_koza_data[number_of_koza].sex,&all_koza_data[number_of_koza].birthday,&all_koza_data[number_of_koza].freeze,&all_koza_data[number_of_koza].money)!=EOF){
+    while(fscanf(fp, "%s %s %s %s %u %d %d %d", all_koza_data[number_of_koza].id,all_koza_data[number_of_koza].pass,all_koza_data[number_of_koza].sei,all_koza_data[number_of_koza].mei,&all_koza_data[number_of_koza].sex,&all_koza_data[number_of_koza].birthday,&all_koza_data[number_of_koza].freeze,&all_koza_data[number_of_koza].money)!=EOF){
         number_of_koza++;
     }
 
@@ -112,7 +112,7 @@ bool is_all_digit(char* s){
 
 void master_detail() {
     puts("詳細を確認したい口座番号を入力してください。");
-    printf("->");
+        printf("->");
     char* koza_id;
     scanf("%ms", &koza_id);
     if(!is_all_digit(koza_id)){
