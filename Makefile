@@ -1,5 +1,4 @@
 CFLAGS:=-Wall
-CC:=gcc
 
 bank:common.o Login.o master.o bank.o
 	$(CC) $(CFLAGS) -o $@ $^
