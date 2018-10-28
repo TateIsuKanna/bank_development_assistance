@@ -61,15 +61,6 @@ void Info(int koza_index)
     printf("残高:%10d\n",all_koza_data[koza_index].money);
 }
 
-int serach_koza_index(char* id){
-    for(int i=0;i<number_of_koza;++i){
-        if(strcmp(all_koza_data[i].id,id)==0){
-            return i;
-        }
-    }
-    return -1;
-}
-
 void Login() //ログイン情報入力
 {
     puts("---------------------------------------");
@@ -87,7 +78,7 @@ void Login() //ログイン情報入力
     puts("---------------------------------------");
     printf("ID:%s,PASS:%s\n",id,pass);  //確認用
     master_login(id,pass);
-    int koza_index=serach_koza_index(id);
+    int koza_index=search_koza_index(id);
     free(id);
     if(koza_index==-1 || strcmp(all_koza_data[koza_index].pass,pass)!=0) {
         puts("---------------------------------------");
