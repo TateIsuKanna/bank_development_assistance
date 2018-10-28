@@ -74,7 +74,7 @@ bool is_all_digit(char* s){
 
 void master_detail() {
     puts("詳細を確認したい口座番号を入力してください。");
-        printf("->");
+    printf("->");
     char* koza_id;
     scanf("%ms", &koza_id);
     if(!is_all_digit(koza_id)){
@@ -137,8 +137,7 @@ void master_freeze() {
         }
         else if (command==0){
             printf("口座番号%sの口座を凍結解除せず戻ります。\n", all_koza_data[koza_index].id);
-        }
-        else {
+        } else {
             puts("入力された内容が不適切のため操作を中断し戻ります。");
         }
     } else {
@@ -153,8 +152,7 @@ void master_freeze() {
             printf("口座番号%sの口座を凍結しました。\n", all_koza_data[koza_index].id);
         } else if (command==0){
             printf("口座番号%sの口座を凍結せず戻ります。\n", all_koza_data[koza_index].id);
-        }
-        else {
+        } else {
             puts("入力された内容が不適切のため操作を中断し戻ります。");
         }
     }
