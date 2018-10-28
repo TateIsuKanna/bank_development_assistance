@@ -7,13 +7,9 @@
 
 void input(),output(),send(),iolog(),account_info();
 
-void common_main(){
+void common_main(int koza_index){
     for(;;){
         puts("1.入金 2.出金 3.送金 4.ログの表示 5.アカウント情報 6.終了");
-
-        //FIXME:ログイン後の口座番号
-        char koza_id[] = "0000000";
-        int koza_index=search_koza_index(koza_id);
 
         int command;
         if(scanf("%d",&command)!=1){
@@ -32,7 +28,7 @@ void common_main(){
                 send(koza_index);
                 break; 
             case 4:
-                iolog(koza_id);
+                iolog(koza_index);
                 break;
             case 5:
                 account_info(koza_index);
@@ -127,12 +123,12 @@ void send(int koza_index){
 
 
 
-void iolog(char* target_koza_id){
+void iolog(int target_koza_index){
     FILE *fp = fopen("iolog.txt","r");
     char amount[10],koza_id[8];
     int balance;
     while(fscanf(fp,"%s	%d	%s",amount,&balance,koza_id)!=EOF){					//とりあえず全部読み取り
-        if(strcmp(koza_id,target_koza_id)==0) printf("%s	%d \n",amount,balance); 		//口座番号が一致すればprintf 
+        if(strcmp(koza_id,all_koza_data[target_koza_index].id)==0) printf("%s	%d \n",amount,balance); 		//口座番号が一致すればprintf 
     }
     fclose(fp);
 }

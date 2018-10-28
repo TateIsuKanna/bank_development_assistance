@@ -106,7 +106,7 @@ void Login() //ログイン情報入力
     if(Login_check==LOGGEDIN_AS_NORMAL_USER){
         Info(current_koza_index);
     }
-    common_main();
+    common_main(current_koza_index);
 }
 
 void Logo(){
