@@ -73,7 +73,7 @@ int serach_koza_index(char* id){
 void Login() //ログイン情報入力
 {
     puts("---------------------------------------");
-    printf("-口座番号（７桁）を入力してください-\n");
+    puts("-口座番号（７桁）を入力してください-");
     char* id;
     scanf("%ms",&id);
     puts("---------------------------------------");
@@ -84,7 +84,7 @@ void Login() //ログイン情報入力
     scanf("%ms",&pass);
     system("stty echo"); //隠し状態解除
     printf("\n");
-    printf("---------------------------------------\n");
+    puts("---------------------------------------");
     printf("ID:%s,PASS:%s\n",id,pass);  //確認用
     master_login(id,pass);
     int koza_index=serach_koza_index(id);
@@ -103,9 +103,7 @@ void Login() //ログイン情報入力
     current_koza_index=koza_index;
 
 
-    if(Login_check==LOGGEDIN_AS_NORMAL_USER){
-        Info(current_koza_index);
-    }
+    Info(current_koza_index);
     common_main(current_koza_index);
 }
 
