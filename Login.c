@@ -159,7 +159,7 @@ int main()
 {
     FILE *fp = fopen("info.txt","r");
     number_of_koza=0;
-    while(fscanf(fp, "%s %s %s %s %d %d %d %d", all_koza_data[number_of_koza].id,all_koza_data[number_of_koza].pass,all_koza_data[number_of_koza].sei,all_koza_data[number_of_koza].mei,&all_koza_data[number_of_koza].sex,&all_koza_data[number_of_koza].birthday,&all_koza_data[number_of_koza].freeze,&all_koza_data[number_of_koza].money)!=EOF){
+    while(fscanf(fp, "%s %s %s %s %u %d %d %d", all_koza_data[number_of_koza].id,all_koza_data[number_of_koza].pass,all_koza_data[number_of_koza].sei,all_koza_data[number_of_koza].mei,&all_koza_data[number_of_koza].sex,&all_koza_data[number_of_koza].birthday,&all_koza_data[number_of_koza].freeze,&all_koza_data[number_of_koza].money)!=EOF){
         number_of_koza++;
     }
 
