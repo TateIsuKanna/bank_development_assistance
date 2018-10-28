@@ -4,35 +4,10 @@
 #include<unistd.h>
 #include<termios.h>
 
-enum SEX{
-    SEX_MAN,
-    SEX_WOMAN
-};
+#include"bank.h"
+#include"Login.h"
+#include"common.h"
 
-struct koza {
-    char id[20];
-    char pass[20];
-    char sei[20];
-    char mei[20]; 
-    enum SEX sex; 
-    unsigned int birthday;
-    int freeze;
-    unsigned int money;
-
-    char pass_check[20];
-};
-
-//FIXME:固定長
-//FIXME:未初期化
-struct koza all_koza_data[256];
-unsigned int number_of_koza;
-int current_koza_index;
-
-enum LOGIN_STATE{
-    NOT_LOGGEDIN,
-    LOGGEDIN_AS_NORMAL_USER,
-    LOGGEDIN_AS_MASTER
-};
 enum LOGIN_STATE Login_check=NOT_LOGGEDIN;
 
 void master_login(char id[20],char pass[20])
@@ -59,9 +34,8 @@ void master_login(char id[20],char pass[20])
             scanf("%s",pass2);
             system("stty echo"); //隠し状態解除
             puts("");
-            if(strcmp(m_id2,id2)==0)
-                if(strcmp(m_pass2,pass2)==0)
-                {
+            if(strcmp(m_id2,id2)==0){
+                if(strcmp(m_pass2,pass2)==0){
                     puts("---------------------------------------");
                     puts("good!");
                     Login_check=LOGGEDIN_AS_MASTER;
@@ -70,9 +44,9 @@ void master_login(char id[20],char pass[20])
                     puts("ログイン失敗");
 
                 }
+            }
         }
     }
-
 }
 
 void Info(int koza_index)
@@ -132,6 +106,7 @@ void Login() //ログイン情報入力
     if(Login_check==LOGGEDIN_AS_NORMAL_USER){
         Info(current_koza_index);
     }
+    common_main();
 }
 
 void Logo(){
@@ -154,20 +129,3 @@ void Logo(){
     puts("       -        ----         ---------         -         ");
 
 }
-
-int main()
-{
-    FILE *fp = fopen("info.txt","r");
-    number_of_koza=0;
-    while(fscanf(fp, "%s %s %s %s %u %d %d %d", all_koza_data[number_of_koza].id,all_koza_data[number_of_koza].pass,all_koza_data[number_of_koza].sei,all_koza_data[number_of_koza].mei,&all_koza_data[number_of_koza].sex,&all_koza_data[number_of_koza].birthday,&all_koza_data[number_of_koza].freeze,&all_koza_data[number_of_koza].money)!=EOF){
-        number_of_koza++;
-    }
-
-    Logo();
-    while(1){
-        //menu;
-        Login_check=NOT_LOGGEDIN;
-        Login();
-    }
-}
-

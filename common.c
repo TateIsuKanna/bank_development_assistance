@@ -2,39 +2,12 @@
 #include<stdlib.h>
 #include<string.h>
 
-enum SEX{
-    SEX_MAN,
-    SEX_WOMAN
-};
-
-struct koza {
-    char id[20];
-    char pass[20];
-    char sei[20];
-    char mei[20]; 
-    enum SEX sex; 
-    unsigned int birthday;
-    int freeze;
-    unsigned int money;
-
-    char pass_check[20];
-};
-
-//FIXME:固定長
-struct koza all_koza_data[256];
-unsigned int koza_number;
+#include"bank.h"
+#include"common.h"
 
 void input(),output(),send(),iolog(),account_info();
-int search_koza_index();
 
-int main(){
-    FILE *fp;
-    fp = fopen("info.txt","r");
-    koza_number=0;
-    while(fscanf(fp, "%s %s %s %s %u %d %d %d", all_koza_data[koza_number].id,all_koza_data[koza_number].pass,all_koza_data[koza_number].sei,all_koza_data[koza_number].mei,&all_koza_data[koza_number].sex,&all_koza_data[koza_number].birthday,&all_koza_data[koza_number].freeze,&all_koza_data[koza_number].money)!=EOF){
-        koza_number++; 
-    }										//info.txt内全部読み取り&口座のカウント
-    fclose(fp);
+void common_main(){
     for(;;){
         puts("1.入金 2.出金 3.送金 4.ログの表示 5.アカウント情報 6.終了");
 
@@ -62,20 +35,10 @@ int main(){
                 iolog(koza_id);
                 break;
             case 5:
-                fp=fopen("info.txt","w");
-                for(int i=0;i<koza_number;i++){
-                    fprintf(fp, "%s %s %s %s %d %d %d %d \n", all_koza_data[i].id, all_koza_data[i].pass, all_koza_data[i].sei, all_koza_data[i].mei, all_koza_data[i].sex, all_koza_data[i].birthday, all_koza_data[i].freeze, all_koza_data[i].money);
-                }						//info.txtに全部書き出し
                 account_info(koza_index);
-                fclose(fp);
                 break;
             case 6:
-                fp=fopen("info.txt","w");
-                for(int i=0;i<koza_number;i++){
-                    fprintf(fp, "%s %s %s %s %d %d %d %d \n", all_koza_data[i].id, all_koza_data[i].pass, all_koza_data[i].sei, all_koza_data[i].mei, all_koza_data[i].sex, all_koza_data[i].birthday, all_koza_data[i].freeze, all_koza_data[i].money);
-                }
-                fclose(fp);
-                exit(1);
+                return ;
                 break;
             default:
                 puts("Error:1〜6の数字を入力してください");
@@ -85,7 +48,7 @@ int main(){
 
 
 int search_koza_index(char* id){
-    for(int i=0;i<koza_number;++i){
+    for(int i=0;i<number_of_koza;++i){
         if(strcmp(all_koza_data[i].id,id)==0){
             return i;							//口座番号を確認し一致すると上から何行目かを返す
         }

@@ -2,35 +2,10 @@
 #include<stdlib.h>
 #include<string.h>
 
-enum SEX{
-    SEX_MAN,
-    SEX_WOMAN
-};
-
-struct koza {
-    char id[20];
-    char pass[20];
-    char sei[20];
-    char mei[20]; 
-    enum SEX sex; 
-    unsigned int birthday;
-    int freeze;
-    unsigned int money;
-
-    char pass_check[20];
-}account;
-
-
-void add_account(int koza_id);
-
-//mainから適当にintで値引っ張って来る
-int main() {
-    for (int n = 0; n<3; n++) {
-        add_account(n);
-    }
-}
+#include"bank.h"
 
 void add_account(int koza_id) {
+    struct koza account;
 
     puts("口座を作成します。");
     puts("姓を入力してください。");
@@ -63,4 +38,11 @@ pass1:
     FILE *fp= fopen("info.txt", "a");
     fprintf(fp, "%s %s %s %s %u %d 0 0\n", account.id, account.pass, account.sei, account.mei, account.sex, account.birthday);
     fclose(fp);
+}
+
+int main() {
+    int koza_id;
+    puts("口座番号を入力してください。");
+    scanf("%d",&koza_id);
+    add_account(koza_id);
 }
